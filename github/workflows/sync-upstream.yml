@@ -1,0 +1,21 @@
+on:
+  schedule:
+    # 每天北京时间凌晨2点自动检查原作者更新
+    - cron: '0 18 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 同步上游原仓库
+        run: |
+          git remote add upstream https://github.com/xiaolongbao0709/ai-virtual-phone.git
+          git fetch upstream
+          git merge upstream/main --allow-unrelated-histories
+          git push origin main
