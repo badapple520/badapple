@@ -5,7 +5,7 @@ on:
 
 jobs:
   sync:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest   # 直接用最新版 24，彻底解决环境报错
     steps:
       - name: 拉取最新代码
         uses: actions/checkout@v4
@@ -13,9 +13,10 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 合并上游更新（保留你的图标和配置）
+      - name: 同步上游更新（保留你的图标和密码配置）
         run: |
           git remote add upstream https://github.com/xiaolongbao0709/ai-virtual-phone.git
           git fetch upstream
-          git merge upstream/main --allow-unrelated-histories -m "同步原作者更新"
+          # -X ours 是重点：遇到冲突时，强制保留你电脑上修改过的文件（图标、密码等）
+          git merge upstream/main --allow-unrelated-histories -X ours -m "同步原作者更新"
           git push origin main
